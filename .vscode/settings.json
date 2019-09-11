@@ -15,13 +15,10 @@
     "editor.insertSpaces": true,
     "editor.detectIndentation": false,
     "editor.formatOnPaste": true,
-    "workbench.statusBar.feedback.visible": false,
-    "workbench.colorTheme": "Material Theme Palenight High Contrast",
+    "workbench.colorTheme": "Material Theme High Contrast",
     "workbench.iconTheme": "material-icon-theme",
     "terminal.integrated.shell.windows": "C:\\Windows\\System32\\wsl.exe",
-    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 0}",
     "editor.multiCursorModifier": "ctrlCmd",
-    "materialTheme.autoApplyIcons": false,
     "editor.minimap.enabled": false,
     "vim.useCtrlKeys": false,
     "vim.handleKeys": {
@@ -124,7 +121,7 @@
             "commands": [
                 "redo"
             ]
-        }        
+        }
     ],
     "git.ignoreMissingGitWarning": true,
     "terminal.external.windowsExec": "C:\\Windows\\System32\\wsl.exe",
