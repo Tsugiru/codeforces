@@ -19,9 +19,6 @@
         "scope": "cpp",
         "prefix": "#include",
         "body": [
-            "#pragma GCC optimize (\"O3\")",
-            "#pragma GCC target (\"sse4\")",
-            "",
             "#include <bits/stdc++.h>",
             "#include <ext/pb_ds/tree_policy.hpp>",
             "#include <ext/pb_ds/assoc_container.hpp>",
@@ -43,8 +40,8 @@
             "typedef vector<pi> vpi;",
             "typedef vector<pl> vpl;",
             "typedef vector<cd> vcd;",
-            "typedef vector<vector<int>> vvi",
-            "typedef vector<vector<ll>> vvl",
+            "typedef vector<vector<int>> vvi;",
+            "typedef vector<vector<ll>> vvl;",
             "template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;",
             "",
             "#define FOR(i, a, b) for (int i=a; i<(b); i++)",
@@ -66,6 +63,12 @@
             "const int MOD = 1000000007;",
             "const ll INF = 1e18;",
             "const int MX = 100001; //check the limits, dummy",
+            "",
+            "int main() {",
+            "    ios_base::sync_with_stdio(false);",
+            "    cin.tie(NULL);",
+            "    cout.tie(NULL);",
+            "}"
         ]
     }
 }
