@@ -69,27 +69,30 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
-vll sieve(ll x) {
-    vll p(sqrt(x) + 1, 0), res;
-    p[0] = p[1] = 1;
-    F0R(i, sz(p)) {
-        if (p[i]) continue;
-        for (ll j = i * i; j < sz(p); j += i) p[j] = 1;
-        if (x % i == 0) res.pb(i);
-    }
-    if (sz(res) == 1 && x/res[0] != res[0]) res.pb(x / res[0]);
-    if (sz(res) == 0) res.pb(x);
-    return res;
-}
+ll gcd(ll a, ll b){ 
+    if (a == 0) 
+        return b;  
+    return gcd(b % a, a);  
+} 
 
-ll fstpow(ll x, ll y) {
-    ll res = 1, cur = x;
-    while (y) {
-        if (y & 1) res = (res * cur) % MOD;
-        cur = (cur * cur) % MOD;
-        y >>= 1;
+bool check(ll n, vll &p, ll l, ll a, ll b, ll x, ll y, ll k) {
+    ll u = n / l, v = n / a, w = n / b;
+    ll sum = 0;
+    F0R(i, n) {
+        if(u-- > 0) {
+            sum += (p[i] / 100LL) * (x + y);
+        }
+        else if(v-- > 0) {
+            sum += (p[i] / 100LL) * x;
+        }
+        else if(w-- > 0) {
+            sum += (p[i] / 100LL) * y;
+        }
+        else {
+            break;
+        }
     }
-    return res;
+    return sum >= k;
 }
 
 int main() {
@@ -97,21 +100,31 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    ll x;
-    ll n;
-    cin >> x >> n;
-    vll primes = sieve(x);
+    ll q; cin >> q;
+    while(q--) {
+        ll n; cin >> n;
+        vll p(n, 0);
+        F0R(i, n) cin >> p[i];
+        sort(p.rbegin(), p.rend());
 
-    ll ans = 1;
-    for (ll p : primes) {
-        ll y = 0, cur = p;
-        while (cur <= n) {
-            y += n / cur;
-            if(cur <= INF/p) cur *= p;
-            else break;
+        ll a, b, x, y; cin >> x >> a >> y >> b;
+        ll l = (a * b) / gcd(a, b);
+
+        ll k; cin >> k;
+        if(y > x) {
+            swap(x, y);
+            swap(a, b);
         }
-        ans = (ans * fstpow(p, y)) % MOD;
+        
+        if(!check(n, p , l, a, b, x, y, k)) cout << -1 << endl;
+        else {
+            ll lo = 0, hi = n;
+            while(hi - lo > 1) {
+                ll mid = (hi - lo) / 2 + lo;
+                if(check(mid, p, l, a, b, x, y, k)) hi = mid;
+                else lo = mid;
+            }
+            cout << hi << endl;
+        }
     }
-
-    cout << ans << endl;
 }

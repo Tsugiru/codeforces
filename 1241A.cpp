@@ -69,49 +69,15 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
-vll sieve(ll x) {
-    vll p(sqrt(x) + 1, 0), res;
-    p[0] = p[1] = 1;
-    F0R(i, sz(p)) {
-        if (p[i]) continue;
-        for (ll j = i * i; j < sz(p); j += i) p[j] = 1;
-        if (x % i == 0) res.pb(i);
-    }
-    if (sz(res) == 1 && x/res[0] != res[0]) res.pb(x / res[0]);
-    if (sz(res) == 0) res.pb(x);
-    return res;
-}
-
-ll fstpow(ll x, ll y) {
-    ll res = 1, cur = x;
-    while (y) {
-        if (y & 1) res = (res * cur) % MOD;
-        cur = (cur * cur) % MOD;
-        y >>= 1;
-    }
-    return res;
-}
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
-
-    ll x;
-    ll n;
-    cin >> x >> n;
-    vll primes = sieve(x);
-
-    ll ans = 1;
-    for (ll p : primes) {
-        ll y = 0, cur = p;
-        while (cur <= n) {
-            y += n / cur;
-            if(cur <= INF/p) cur *= p;
-            else break;
-        }
-        ans = (ans * fstpow(p, y)) % MOD;
+    
+    int q; cin >> q;
+    while(q--) {
+        int n; cin >> n;
+        if(n == 2) cout << 2 << endl;
+        else cout << (n & 1 ? 1 : 0) << endl;
     }
-
-    cout << ans << endl;
 }
