@@ -69,62 +69,58 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
-ll gcd(ll a, ll b){ 
-    if (a == 0) 
-        return b;  
-    return gcd(b % a, a);  
-} 
-
-bool check(ll n, vll &p, ll l, ll a, ll b, ll x, ll y, ll k) {
-    ll u = n / l, v = (n / a) - u, w = (n / b) - u;
-    ll sum = 0;
-    F0R(i, n) {
-        if(u-- > 0) {
-            sum += (p[i] / 100LL) * (x + y);
-        }
-        else if(v-- > 0) {
-            sum += (p[i] / 100LL) * x;
-        }
-        else if(w-- > 0) {
-            sum += (p[i] / 100LL) * y;
-        }
-        else {
-            break;
-        }
-    }
-    return sum >= k;
-}
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
-    ll q; cin >> q;
-    while(q--) {
-        ll n; cin >> n;
-        vll p(n, 0);
-        F0R(i, n) cin >> p[i];
-        sort(p.rbegin(), p.rend());
+    int n, m;
+    cin >> n >> m;
+    uspii s;
+    vvi g(n, vi());
+    F0R(i, m) {
+        int a, b; cin >> a >> b; a--; b--;
+        g[a].pb(b);
+        g[b].pb(a);
+        s.insert({a, b});
+        s.insert({b, a});
+    }
 
-        ll a, b, x, y; cin >> x >> a >> y >> b;
-        ll l = (a * b) / gcd(a, b);
-
-        ll k; cin >> k;
-        if(y > x) {
-            swap(x, y);
-            swap(a, b);
+    vi c(n, 0), cnt(3, 0);
+    FOR(i, 1, 4) {
+        int j = 0;
+        while(j < n && c[j] != 0) j++;
+        if(j == n) {
+            cout << -1 << endl;
+            return 0;
         }
-        
-        if(!check(n, p ,l, a, b, x, y, k)) cout << -1 << endl;
-        else {
-            ll lo = 0, hi = n;
-            while(hi - lo > 1) {
-                ll mid = (hi - lo) / 2 + lo;
-                if(check(mid, p, l, a, b, x, y, k)) hi = mid;
-                else lo = mid;
+        c[j] = i;
+        cnt[i - 1]++;
+        F0R(q, n) {
+            if(q != j && !s.count({j, q})) {
+                c[q] = i;
+                cnt[i - 1]++;
             }
-            cout << hi << endl;
         }
     }
+    if(count(c.begin(), c.end(), 0)) {
+        cout << -1 << endl;
+        return 0;
+    }
+    F0R(i, n) {
+        if(c[i] == 1 && sz(g[i]) != cnt[1] + cnt[2]
+        || c[i] == 2 && sz(g[i]) != cnt[0] + cnt[2]
+        || c[i] == 3 && sz(g[i]) != cnt[0] + cnt[1]) {
+            cout << -1 << endl;
+            return false;
+        }
+        F0R(j, sz(g[i])) {
+            if(c[g[i][j]] == c[i]) {
+                cout << -1 << endl;
+                return false;
+            }
+        }
+    }    
+    for(int i : c) cout << i << " ";
+    cout << '\n';
 }
