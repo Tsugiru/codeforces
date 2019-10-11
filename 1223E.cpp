@@ -49,6 +49,8 @@ typedef vector<pll> vpll;
 typedef vector<cd> vcd;
 typedef vector<vector<int>> vvi;
 typedef vector<vector<ll>> vvl;
+typedef vector<vector<pll>> vvpll;
+typedef vector<vector<pii>> vvpii;
 typedef unordered_map<int, int> umpii;
 typedef unordered_map<ll, ll> umpll;
 typedef unordered_set<int> usi;
@@ -69,62 +71,44 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+pll f(vvpii &g, int i, int p, int k) {
+    ll cur = 0;
+    vll v;
+    F0R(j, sz(g[i])) {
+        if(g[i][j].f == p) continue;
+        pll ret = f(g, g[i][j].f, i, k);
+        cur += ret.f;
+        v.pb(ret.s + g[i][j].s - ret.f);
+    }
+
+    sort(rbegin(v), rend(v));
+    F0R(j, min(sz(v), k)) {
+        if(v[j] > 0) {
+            cur += v[j];
+        }
+    }
+
+    pll res;
+    res.f = cur;
+    res.s = cur - (k - 1 < sz(v) ? v[k - 1] > 0 ? v[k - 1] : 0 : 0);
+    return res;
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n, m;
-    cin >> n >> m;
-    uspii s;
-    vvi g(n, vi());
-    F0R(i, m) {
-        int a, b; cin >> a >> b; a--; b--;
-        g[a].pb(b);
-        g[b].pb(a);
-        s.insert({a, b});
-        s.insert({b, a});
-    }
+    int q; cin >> q;
+    while(q--) {
+        int n, k; cin >> n >> k;
+        vvpii g(n, vpii());
+        F0R(i, n - 1) {
+            int a, b, c; cin >> a >> b >> c; a--; b--;
+            g[a].pb({b, c});
+            g[b].pb({a, c});
+        }
 
-    vi c(n, 0), cnt(3, 0);
-    FOR(i, 1, 4) {
-        int j = 0;
-        while(j < n && c[j] != 0) j++;
-        if(j == n) {
-            cout << -1 << endl;
-            return 0;
-        }
-        c[j] = i;
-        cnt[i - 1]++;
-        F0R(q, n) {
-            if(q != j && !s.count({j, q})) {
-                c[q] = i;
-                cnt[i - 1]++;
-            }
-        }
+        cout << f(g, 0, -1, k).f << endl;
     }
-    if(count(c.begin(), c.end(), 0)) {
-        cout << -1 << endl;
-        return 0;
-    }
-    if(m != cnt[0]*cnt[1] + cnt[1]*cnt[2] + cnt[0]*cnt[2]) {
-        cout << -1 << endl;
-        return 0;
-    }
-    F0R(i, n) {
-        if(c[i] == 1 && sz(g[i]) != cnt[1] + cnt[2]
-        || c[i] == 2 && sz(g[i]) != cnt[0] + cnt[2]
-        || c[i] == 3 && sz(g[i]) != cnt[0] + cnt[1]) {
-            cout << -1 << endl;
-            return false;
-        }
-        F0R(j, sz(g[i])) {
-            if(c[g[i][j]] == c[i]) {
-                cout << -1 << endl;
-                return false;
-            }
-        }
-    } 
-    for(int i : c) cout << i << " ";
-    cout << '\n';
 }

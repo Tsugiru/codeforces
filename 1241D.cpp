@@ -49,10 +49,10 @@ typedef vector<pll> vpll;
 typedef vector<cd> vcd;
 typedef vector<vector<int>> vvi;
 typedef vector<vector<ll>> vvl;
-typedef unordered_map<int, int> umpii;
-typedef unordered_map<ll, ll> umpll;
-typedef unordered_set<int> usi;
-typedef unordered_set<ll> usll;
+typedef unordered_map<int, int, int_hash> umpii;
+typedef unordered_map<ll, ll, int_hash> umpll;
+typedef unordered_set<int, int_hash> usi;
+typedef unordered_set<ll, int_hash> usll;
 typedef unordered_set<pii, pair_hash> uspii;
 typedef queue<int> qi;
 template <class T> using Tree = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;
@@ -74,57 +74,28 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n, m;
-    cin >> n >> m;
-    uspii s;
-    vvi g(n, vi());
-    F0R(i, m) {
-        int a, b; cin >> a >> b; a--; b--;
-        g[a].pb(b);
-        g[b].pb(a);
-        s.insert({a, b});
-        s.insert({b, a});
-    }
+    int q; cin >> q;
+    while(q--) {
+        int n; cin >> n;
+        vi a(n, 0);
+        umpii l, r;
+        F0R(i, n) {
+            cin >> a[i];
+            l[a[i]] = inf; 
+            r[a[i]] = 0; 
+        }
+        F0R(i, n) {
+            l[a[i]] = min(l[a[i]], i);
+            r[a[i]] = max(r[a[i]], i);
+        }
 
-    vi c(n, 0), cnt(3, 0);
-    FOR(i, 1, 4) {
-        int j = 0;
-        while(j < n && c[j] != 0) j++;
-        if(j == n) {
-            cout << -1 << endl;
-            return 0;
+        sort(begin(a), end(a));
+        a.erase(unique(begin(a), end(a)), end(a));
+
+        vi dp(sz(a), 1);
+        FOR(i, 1, sz(a)) {
+            if(l[a[i]] > r[a[i - 1]]) dp[i] = dp[i - 1] + 1;
         }
-        c[j] = i;
-        cnt[i - 1]++;
-        F0R(q, n) {
-            if(q != j && !s.count({j, q})) {
-                c[q] = i;
-                cnt[i - 1]++;
-            }
-        }
+        cout << sz(a) - *max_element(begin(dp), end(dp)) << endl;
     }
-    if(count(c.begin(), c.end(), 0)) {
-        cout << -1 << endl;
-        return 0;
-    }
-    if(m != cnt[0]*cnt[1] + cnt[1]*cnt[2] + cnt[0]*cnt[2]) {
-        cout << -1 << endl;
-        return 0;
-    }
-    F0R(i, n) {
-        if(c[i] == 1 && sz(g[i]) != cnt[1] + cnt[2]
-        || c[i] == 2 && sz(g[i]) != cnt[0] + cnt[2]
-        || c[i] == 3 && sz(g[i]) != cnt[0] + cnt[1]) {
-            cout << -1 << endl;
-            return false;
-        }
-        F0R(j, sz(g[i])) {
-            if(c[g[i][j]] == c[i]) {
-                cout << -1 << endl;
-                return false;
-            }
-        }
-    } 
-    for(int i : c) cout << i << " ";
-    cout << '\n';
 }
