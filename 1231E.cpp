@@ -76,18 +76,29 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    ll n; cin >> n;
-    string s; cin >> s;
+    int q; cin >> q;
+    while(q--) {
+        int n; cin >> n;
+        string s, t; cin >> s >> t;
 
-    ll ans = 0;
-    int prev = 0;
-    for(int i = 1; i < n; i++) {
-        if(s[i] != s[i - 1]) {
-            ans += (prev == 0 ? (i - prev) : (i - prev) * 2 - 1);
-            prev = i;
+        vi v1(26, 0), v2(26, 0);
+        for(char c : s) v1[c - 'a']++;
+        for(char c : t) v2[c - 'a']++;
+        if(v1 != v2) { cout << -1 << endl; continue; }
+        
+        int ans = 0;
+        for(int q = 0; q < n; q++) {
+            int i = s.find_first_of(t[q]);
+            for(int j = q + 1; j < n; j++) {
+                i = s.find_first_of(t[j], i + 1);
+                if(i == string::npos) {
+                    ans = max(ans, j - q);
+                    break;
+                }
+            }
+            if(i != string::npos) ans = max(ans, n - q);
         }
-    }
-    if(prev != 0) ans += n - prev - 1;
 
-    cout << n * (n - 1) / 2 - ans << endl;
+        cout << n - ans << endl;
+    }
 }

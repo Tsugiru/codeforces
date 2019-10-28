@@ -76,18 +76,24 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    ll n; cin >> n;
-    string s; cin >> s;
+    int n, m; cin >> n >> m;
+    vvi v(n, vi(m, 0));
+    F0R(i, n) F0R(j, m) cin >> v[i][j];
+    F0Rd(i, n) F0Rd(j, m) if(v[i][j] == 0) v[i][j] = min(v[i + 1][j], v[i][j + 1]) - 1;
 
-    ll ans = 0;
-    int prev = 0;
-    for(int i = 1; i < n; i++) {
-        if(s[i] != s[i - 1]) {
-            ans += (prev == 0 ? (i - prev) : (i - prev) * 2 - 1);
-            prev = i;
+    F0R(i, n) FOR(j, 1, m)
+        if(v[i][j] <= v[i][j - 1]) {
+            cout << -1 << endl;
+            return 0;
         }
-    }
-    if(prev != 0) ans += n - prev - 1;
 
-    cout << n * (n - 1) / 2 - ans << endl;
+    F0R(j, m) FOR(i, 1, n)
+        if(v[i][j] <= v[i - 1][j]) {
+            cout << -1 << endl;
+            return 0;
+        }
+
+    cout << accumulate(v.begin(), v.end(), 0, [](int sum, vi& a) {
+        return accumulate(a.begin(), a.end(), sum);
+    }) << endl;
 }

@@ -76,18 +76,22 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    ll n; cin >> n;
-    string s; cin >> s;
-
-    ll ans = 0;
-    int prev = 0;
-    for(int i = 1; i < n; i++) {
-        if(s[i] != s[i - 1]) {
-            ans += (prev == 0 ? (i - prev) : (i - prev) * 2 - 1);
-            prev = i;
+    int t; cin >> t;
+    while(t--) {
+        int n; cin >> n;
+        ll a = 0, b = 0;
+        F0R(i, n) {
+            int tmp; cin >> tmp;
+            if(tmp % 2 == 0) a++;
+            else b++;
         }
+        int m; cin >> m;
+        ll c = 0, d = 0;
+        F0R(i, m) {
+            int tmp; cin >> tmp;
+            if(tmp % 2 == 0) c++;
+            else d++;
+        }
+        cout << a * c + b * d << endl;
     }
-    if(prev != 0) ans += n - prev - 1;
-
-    cout << n * (n - 1) / 2 - ans << endl;
 }

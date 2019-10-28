@@ -76,18 +76,21 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    ll n; cin >> n;
-    string s; cin >> s;
+    int n; cin >> n;
+    vi a(n, 0);
+    F0R(i, n) cin >> a[i];
+    sort(a.begin(), a.end());
 
-    ll ans = 0;
-    int prev = 0;
-    for(int i = 1; i < n; i++) {
-        if(s[i] != s[i - 1]) {
-            ans += (prev == 0 ? (i - prev) : (i - prev) * 2 - 1);
-            prev = i;
+    int i = 0, j = sz(a) - 1;
+    ll x = 0, y = 0;
+    while(i <= j) {
+        if(i != j) {
+            x += a[j];
+            y += a[i];
         }
+        else x += a[j];
+        i++; j--;
     }
-    if(prev != 0) ans += n - prev - 1;
 
-    cout << n * (n - 1) / 2 - ans << endl;
+    cout << x*x + y*y << endl;
 }

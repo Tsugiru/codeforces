@@ -76,18 +76,14 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    ll n; cin >> n;
-    string s; cin >> s;
-
-    ll ans = 0;
-    int prev = 0;
-    for(int i = 1; i < n; i++) {
-        if(s[i] != s[i - 1]) {
-            ans += (prev == 0 ? (i - prev) : (i - prev) * 2 - 1);
-            prev = i;
+    int t; cin >> t;
+    while(t--) {
+        int n; cin >> n;
+        string s; cin >> s;
+        int x = s.find_first_of('1'), y = s.find_last_of('1');
+        if(x != string::npos) {
+            cout << max(n - x, y + 1) * 2 << endl;
         }
+        else cout << n << endl;
     }
-    if(prev != 0) ans += n - prev - 1;
-
-    cout << n * (n - 1) / 2 - ans << endl;
 }

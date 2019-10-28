@@ -7,7 +7,6 @@ using namespace __gnu_pbds;
 
 #define sz(x) (int)(x).size()
 #define pb push_back
-#define f first
 #define s second
 #define lb lower_bound
 #define ub upper_bound
@@ -48,6 +47,7 @@ typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef vector<cd> vcd;
 typedef vector<vector<int>> vvi;
+typedef vector<vector<vector<int>>> vvvi;
 typedef vector<vector<ll>> vvl;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
@@ -76,18 +76,66 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    ll n; cin >> n;
-    string s; cin >> s;
+    int n; cin >> n;
+    vvl cs(n, vll(3, 0));
+    for(int i = 0; i < n; i++) cin >> cs[i][0];
+    for(int i = 0; i < n; i++) cin >> cs[i][1];
+    for(int i = 0; i < n; i++) cin >> cs[i][2];
 
-    ll ans = 0;
-    int prev = 0;
-    for(int i = 1; i < n; i++) {
-        if(s[i] != s[i - 1]) {
-            ans += (prev == 0 ? (i - prev) : (i - prev) * 2 - 1);
-            prev = i;
+    vvi v(n, vi());
+    for(int i = 0; i < n - 1; i++) {
+        int a, b; cin >> a >> b; a--; b--;
+        v[a].pb(b);
+        v[b].pb(a);
+        if(sz(v[a]) > 2 || sz(v[b]) > 2) {
+            cout << -1 << endl;
+            return 0;
         }
     }
-    if(prev != 0) ans += n - prev - 1;
 
-    cout << n * (n - 1) / 2 - ans << endl;
+    int start = 0;
+    for(int i = 0; i < n; i++) {
+        if(sz(v[i]) == 1) start = i;
+    }
+    qi q; q.push(start);
+    vi nodes;
+    vi c(n, 0); c[start] = 1;
+    while(!q.empty()) {
+        int cur = q.front();
+        nodes.pb(cur);
+        q.pop();
+
+        for(int next : v[cur]) {
+            if(!c[next]) {
+                q.push(next);
+                c[next] = 1;
+            }
+        }
+    }
+
+    vi colors{0, 1, 2}, best;
+    ll ans = INF;
+    do {
+        ll sum = 0;
+        for(int i = 0; i < sz(nodes); i++) {
+            if(i % 3 == 0) sum += cs[nodes[i]][colors[0]];
+            if((i - 1) % 3 == 0) sum += cs[nodes[i]][colors[1]];
+            if((i - 2) % 3 == 0) sum += cs[nodes[i]][colors[2]];
+        }
+        if(sum < ans) {
+            ans = sum;
+            best = colors;
+        }
+    }
+    while(next_permutation(colors.begin(), colors.end()));
+
+    cout << ans << endl;
+    vi w(n, 0);
+    for(int i = 0; i < sz(nodes); i++) {
+        if(i % 3 == 0) w[nodes[i]] = best[0] + 1;
+        if((i - 1) % 3 == 0) w[nodes[i]] = best[1] + 1;
+        if((i - 2) % 3 == 0)  w[nodes[i]] = best[2] + 1;
+    }
+    for(int i : w) cout << i << " ";
+    cout << '\n';
 }

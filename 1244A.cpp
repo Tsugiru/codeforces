@@ -76,18 +76,14 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    ll n; cin >> n;
-    string s; cin >> s;
+    int t; cin >> t;
+    while(t--) {
+        int a, b, c, d, k;
+        cin >> a >> b >> c >> d >> k;
 
-    ll ans = 0;
-    int prev = 0;
-    for(int i = 1; i < n; i++) {
-        if(s[i] != s[i - 1]) {
-            ans += (prev == 0 ? (i - prev) : (i - prev) * 2 - 1);
-            prev = i;
-        }
+        int x = a/c + (a % c != 0);
+        int y = b/d + (b % d != 0);
+        if(x + y <= k) cout << x << " " << y << endl;
+        else cout << -1 << endl;
     }
-    if(prev != 0) ans += n - prev - 1;
-
-    cout << n * (n - 1) / 2 - ans << endl;
 }
