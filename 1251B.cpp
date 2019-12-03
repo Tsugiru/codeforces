@@ -76,10 +76,41 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int q; cin >> q;
+    while(q--) {
+        int n; cin >> n;
+        vector<string> vs;
+        int zeros = 0;
+        F0R(i, n) {
+            string s; cin >> s;
+            zeros += count(all(s), '0');
+            vs.pb(s);
+        }
+
+        int ans = 0;
+        F0R(i, n) {
+            if(zeros >= sz(vs[i])) {
+                ans++;
+                zeros -= sz(vs[i]);
+            }
+            else {
+                if(!(sz(vs[i]) & 1)
+                    && (zeros & 1)) {
+                    bool ok = false;
+                    F0R(j, n) {
+                        if(j == i) continue;
+                        if(sz(vs[j])&1) {
+                            ok = true;
+                            break;
+                        }
+                    }
+                    if(ok) ans++;
+                    zeros = 0;
+                }
+                else ans++;
+            }
+        }
+
+        cout << ans << endl;
+    }
 }

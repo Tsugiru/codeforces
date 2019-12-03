@@ -51,8 +51,8 @@ typedef vector<vector<int>> vvi;
 typedef vector<vector<ll>> vvl;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
-typedef unordered_map<int, int, int_hash> umii;
-typedef unordered_map<ll, ll, int_hash> umll;
+typedef unordered_map<int, int, int_hash> umpii;
+typedef unordered_map<ll, ll, int_hash> umpll;
 typedef unordered_set<int, int_hash> usi;
 typedef unordered_set<ll, int_hash> usll;
 typedef unordered_set<pii, pair_hash> uspii;
@@ -71,15 +71,40 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+vpii fact(int x, int k) {
+    vpii res;
+    for(int i = 2; i*i <= x; i++) {
+        pii cur = {i, 0};
+        while(x % i == 0) {
+            cur.s += 1;
+            x /= i;
+        }
+        if(cur.s % k != 0) res.pb({cur.f, cur.s % k});
+    }
+    if(x != 1) res.pb({x, 1});
+    return res;
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int n, k; cin >> n >> k;
+    map<vpii, int> mp;
+    ll count = 0;
+
+    F0R(i, n) {
+        int tmp; cin >> tmp;
+        vpii v = fact(tmp, k);
+        vpii c(sz(v), {0, 0});
+        F0R(i, sz(v)) {
+            c[i].f = v[i].f;
+            c[i].s = k - v[i].s;
+        }
+        count += mp[c];
+        mp[v]++;
+    }
+
+    cout << count << endl;
 }

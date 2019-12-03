@@ -76,10 +76,10 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int t; cin >> t;
+    while(t--) {
+        int n, x, a, b;
+        cin >> n >> x >> a >> b;
+        cout << min(n - 1, abs(a - b) + x) << endl;
+    }
 }

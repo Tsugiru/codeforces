@@ -76,10 +76,29 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int t; cin >> t;
+    while(t--) {
+        int n; cin >> n;
+        int diff = -1;
+        bool passed = false, ok = true;
+        vi va(n, 0), vb(n, 0);
+        F0R(i, n) cin >> va[i];
+        F0R(i, n) cin >> vb[i];
+
+        F0R(i, n) {
+            int a = va[i], b = vb[i];
+            if(a != b) {
+                if(passed || b < a || (diff != -1 && b - a != diff)) {
+                    ok = false;
+                    break;
+                }
+                if(diff == -1) diff = b - a;
+            }
+            else {
+                if(diff != -1) passed = true;
+            }
+        }
+
+        cout << (ok ? "Yes" : "No") << endl;
+    }
 }

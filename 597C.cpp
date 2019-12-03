@@ -48,7 +48,7 @@ typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef vector<cd> vcd;
 typedef vector<vector<int>> vvi;
-typedef vector<vector<ll>> vvl;
+typedef vector<vector<ll>> vvll;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
 typedef unordered_map<int, int, int_hash> umii;
@@ -71,15 +71,46 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+struct bit {
+    vll tree;
+
+    bit(int size) : tree(size + 1, 0) {}
+
+    ll query(int i) {
+        ll sum = 0;
+        while(i > 0) {
+            sum += tree[i];
+            i -= (i & -i);
+        }
+        return sum;
+    }
+
+    void update(int i, ll delta) {
+        while(i < sz(tree)) {
+            tree[i] += delta;
+            i += (i & -i);
+        }
+    }
+};
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
+    int n, k; cin >> n >> k;
     vi v(n, 0);
     F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+
+    ll res = 0;
+    vector<bit> b(k + 1, bit(n));
+    F0R(i, n) {
+        b[0].update(v[i], 1);
+        FOR(j, 1, sz(b)) {
+            b[j].update(v[i], b[j - 1].query(v[i] - 1));
+        }
+        res += b.back().query(v[i]) - b.back().query(v[i] - 1);
+    }
+
+    cout << res << endl;
 }

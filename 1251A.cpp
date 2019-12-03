@@ -76,10 +76,21 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int t; cin >> t;
+    while(t--) {
+        string s; cin >> s;
+        string res = "";
+        int cnt = 1;
+        for(int i = 1; i < sz(s); i++) {
+            if(s[i] == s[i - 1]) cnt++;
+            else {
+                if(cnt & 1) res.pb(s[i - 1]);
+                cnt = 1;
+            }
+        }
+        if(cnt & 1) res.pb(s[sz(s) - 1]);
+        sort(all(res));
+        res.erase(unique(all(res)), end(res));
+        cout << res << endl;
+    }
 }

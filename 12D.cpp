@@ -48,9 +48,10 @@ typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef vector<cd> vcd;
 typedef vector<vector<int>> vvi;
-typedef vector<vector<ll>> vvl;
+typedef vector<vector<ll>> vvll;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
+typedef vector<vvi> vvvi;
 typedef unordered_map<int, int, int_hash> umii;
 typedef unordered_map<ll, ll, int_hash> umll;
 typedef unordered_set<int, int_hash> usi;
@@ -71,15 +72,53 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+struct bit {
+    vll tree;
+    bit(int size) : tree(size + 1, 0) {}
+
+    ll read(int i) {
+        ll sum = 0;
+        while(i) {
+            sum = max(sum, tree[i]);
+            i -= (i & -i);
+        }
+        return sum;
+    }
+
+    void update(int i, ll val) {
+        while(i < sz(tree)) {
+            tree[i] = max(val, tree[i]);
+            i += (i & -i);
+        }
+    }
+};
+
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    ios_base::sync_with_stdio(false); cin.tie(NULL);
     cout.tie(NULL);
 
     int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    vector<tuple<int, int, int>> v(n, {0, 0, 0});
+    vi xx(n, 0);
+
+    F0R(i, n) cin >> get<0>(v[i]);
+    F0R(i, n) cin >> get<1>(v[i]);
+    F0R(i, n) cin >> get<2>(v[i]);
+    F0R(i, n) xx[i] = get<1>(v[i]);
+    sort(all(v));
+    sort(all(xx));
+
+    int ans = 0, prev = n - 1;
+    bit b(n);
+    F0Rd(i, n) {
+        while(i < prev && get<0>(v[i]) < get<0>(v[i + 1])) {
+            int x = lower_bound(all(xx), get<1>(v[prev])) - begin(xx);
+            b.update(n - x, get<2>(v[prev]));
+            prev--;
+        }
+        int x = lower_bound(all(xx), get<1>(v[i])) - begin(xx);
+        if(b.read(n - x - 1) > get<2>(v[i])) ans++;
+    }
+
+    cout << ans << endl;
 }

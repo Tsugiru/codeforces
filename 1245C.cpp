@@ -51,8 +51,8 @@ typedef vector<vector<int>> vvi;
 typedef vector<vector<ll>> vvl;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
-typedef unordered_map<int, int, int_hash> umii;
-typedef unordered_map<ll, ll, int_hash> umll;
+typedef unordered_map<int, int, int_hash> umpii;
+typedef unordered_map<ll, ll, int_hash> umpll;
 typedef unordered_set<int, int_hash> usi;
 typedef unordered_set<ll, int_hash> usll;
 typedef unordered_set<pii, pair_hash> uspii;
@@ -76,10 +76,18 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    string s; cin >> s;
+    if(s.find('m') != string::npos || s.find('w') != string::npos) {
+        cout << 0 << endl;
+        return 0;
+    }
+    vi dp(sz(s) + 1, 0);
+    dp[0] = 1;
+    for(int i = 0; i < sz(s); i++) {
+        dp[i + 1] = (dp[i] 
+            + (i > 0 
+            && ((s[i] == 'u' && s[i - 1] == 'u')
+            || (s[i] == 'n' && s[i - 1] == 'n')) ? dp[i - 1] : 0)) % MOD;
+    }
+    cout << dp[sz(s)] << endl;
 }

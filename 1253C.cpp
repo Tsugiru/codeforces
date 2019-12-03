@@ -76,10 +76,34 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
+    ll n, m; cin >> n >> m;
+    vll v(n, 0);
     F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    sort(all(v));
+
+    vll diff(m, 0);
+    for(int i = sz(v) - 1, cur = 0; i >= sz(v) - m; i--, cur++) {
+        for(int j = i; j >= 0; j -= m) {
+            diff[cur] += v[j];
+        }
+    }
+
+    ll sum = 0;
+    F0Rd(i, n) {
+        ll elem = n - i;
+        sum += v[i]*( ((elem) / m) + ((elem) % m != 0));
+    }
+
+    vll res {sum};
+    for(int i = n - 1, cur = 0; i >= 0; i--) {
+        sum -= diff[cur];
+        diff[cur] -= v[i];
+        res.pb(sum);
+         
+        cur++;
+        cur %= m;
+    }
+
+    F0Rd(i, n) cout << res[i] << " ";
+    cout << '\n';
 }

@@ -48,9 +48,10 @@ typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef vector<cd> vcd;
 typedef vector<vector<int>> vvi;
-typedef vector<vector<ll>> vvl;
+typedef vector<vector<ll>> vvll;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
+typedef vector<vvi> vvvi;
 typedef unordered_map<int, int, int_hash> umii;
 typedef unordered_map<ll, ll, int_hash> umll;
 typedef unordered_set<int, int_hash> usi;
@@ -71,15 +72,52 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+bool check(int t, vi &lvl) {
+    int sum = sz(lvl) - 1;
+    for(int i = 0, cnt = 0; i < sz(lvl); i++) {
+        if(lvl[i]) cnt++;
+        else {
+            sum += 2*cnt;
+            cnt = 0;
+        }
+    }
+    return sum <= t;
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int m, n, k, t;
+    cin >> m >> n >> k >> t;
+    vi v(m, 0);
+    for(int i = 0; i < m; i++) cin >> v[i];
+        
+    vvi trp(k, vi(3, 0));
+    for(int i = 0; i < k; i++) cin >> trp[i][0] >> trp[i][1] >> trp[i][2];
+
+    sort(begin(v), end(v));
+
+    int lo = -1, hi = m;
+    while(hi - lo > 1) {
+        int mid = (hi - lo) / 2 + lo;
+
+        vi lvl(n + 2, 0);
+        for(int i = 0; i < k; i++) {
+            if(trp[i][2] > v[mid]) {
+                lvl[trp[i][0]]++;
+                lvl[trp[i][1] + 1]--;
+            }
+        }
+
+        for(int i = 1; i < sz(lvl); i++) {
+            lvl[i] += lvl[i - 1];
+        }
+
+        if(check(t, lvl)) hi = mid;
+        else lo = mid;
+    }
+
+    cout << m - hi << endl;
 }

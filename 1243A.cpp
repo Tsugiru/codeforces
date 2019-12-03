@@ -75,11 +75,23 @@ int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
-
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    
+    int k; cin >> k;
+    while(k--) {
+        int n; cin >> n;
+        vi v(n, 0);
+        F0R(i, n) cin >> v[i];
+        sort(all(v));
+        reverse(all(v));
+        int best = 0;
+        for(int i = 0; i < sz(v); i++) {
+            if(v[i] <= i + 1) {
+                best = max(best, v[i]);
+            }
+            else {
+                best = max(best, i + 1);
+            }
+        } 
+        cout << best << endl;
+    }
 }

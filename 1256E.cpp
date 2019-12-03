@@ -77,9 +77,28 @@ int main() {
     cout.tie(NULL);
 
     int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    vpii v(n, {0, 0});
+    F0R(i, n) cin >> v[i].f >> v[i].s;
+
+    int teams = n / 3;
+    sort(all(v));
+    int best = inf;
+    for(int i = 2 + n % 3; i < n; i += 3) {
+        if(v[i].f - v[i - (2 + n % 3)].f < v[best].f - v[best - (2 + n % 3)].f) {
+            best = i;
+        }
+    }
+
+    int ans = 0, cur = 1;
+    vi res(n, 0);
+    for(int i = 2; i < n; i = (i <= best && i >= best - 4 ? best + 3 : i + 3)) {
+        ans += (v[i].f - v[i - 2].f);
+        res[v[i].s] = res[v[i - 1].s] = res[v[i - 2].s] = cur++;
+    }
+
+    for(int i = best; i >= best - (2 + n % 3); i--) {
+        res[v[i].s] = cur;
+    }
+
+    cout << ans << " " << n / 3 << endl;
 }

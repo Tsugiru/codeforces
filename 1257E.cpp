@@ -76,10 +76,32 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int k1, k2, k3;
+    cin >> k1 >> k2 >> k3;
+    vi v(k1 + k2 + k3, 0);
+
+    F0R(i, k1) {
+        int temp; cin >> temp;
+        v[temp - 1] = 1;
+    }
+    F0R(i, k2) {
+        int temp; cin >> temp;
+        v[temp - 1] = 2;
+    }
+    F0R(i, k3) {
+        int temp; cin >> temp;
+        v[temp - 1] = 3;
+    }
+
+    vvi dp(sz(v) + 1, vi(3, sz(v)));
+    dp[0][0] = dp[0][1] = dp[0][2] = 0;
+    for(int i = 1; i < sz(dp); i++) {
+        for(int j = 0; j < 3; j++) {
+            for(int k = 0; k <= j; k++) {
+                dp[i][j] = min(dp[i][j], dp[i - 1][k] + (v[i - 1] == j + 1 ? 0 : 1));
+            }
+        }
+    }
+
+    cout << min(dp[sz(dp) - 1][0], min(dp[sz(dp) - 1][1], dp[sz(dp) - 1][2])) << endl;
 }

@@ -48,9 +48,10 @@ typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef vector<cd> vcd;
 typedef vector<vector<int>> vvi;
-typedef vector<vector<ll>> vvl;
+typedef vector<vector<ll>> vvll;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
+typedef vector<vvi> vvvi;
 typedef unordered_map<int, int, int_hash> umii;
 typedef unordered_map<ll, ll, int_hash> umll;
 typedef unordered_set<int, int_hash> usi;
@@ -76,10 +77,12 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int t; cin >> t;
+    while(t--) {
+        vi v(3, 0);
+        cin >> v[0] >> v[1] >> v[2];
+        sort(all(v));
+        if(v[2] > v[0] + v[1]) cout << v[0] + v[1] << endl;
+        else cout << (v[2] + v[1] + v[0]) / 2 << endl;
+    }
 }

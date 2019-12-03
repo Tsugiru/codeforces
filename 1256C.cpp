@@ -51,8 +51,8 @@ typedef vector<vector<int>> vvi;
 typedef vector<vector<ll>> vvl;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
-typedef unordered_map<int, int, int_hash> umii;
-typedef unordered_map<ll, ll, int_hash> umll;
+typedef unordered_map<int, int, int_hash> umpii;
+typedef unordered_map<ll, ll, int_hash> umpll;
 typedef unordered_set<int, int_hash> usi;
 typedef unordered_set<ll, int_hash> usll;
 typedef unordered_set<pii, pair_hash> uspii;
@@ -76,10 +76,38 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int n, m, d;
+    cin >> n >> m >> d;
+    vi c(m, 0);
+    F0R(i, m) cin >> c[i];
+    vi res(n, 0);
+
+    int pos = -1, sum = accumulate(begin(c), end(c), 0), cur = 0;
+    while(sum > 0 && pos < n) {
+        if(n - sum > pos + d) {
+            for(int i = pos + d; i < pos + d + c[cur]; i++) {
+                res[i] = cur + 1;
+            }
+            pos = pos + d + c[cur] - 1;
+            sum -= c[cur];
+            cur++;
+        }
+        else {
+            for(int j = sz(c) - 1, i = sz(res) - 1; j >= cur; j--) {
+                for(int k = 0; k < c[j]; k++) {
+                    res[i--] = j + 1;
+                }
+            }       
+            pos = n;
+        }
+    }
+
+    if(pos + d >= n) {
+        cout << "YES" << endl;
+        for(int i : res) cout << i << " ";
+        cout << "\n";
+    }
+    else {
+        cout << "NO" << endl;
+    }
 }

@@ -76,10 +76,31 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int t; cin >> t;
+    while(t--) {
+        int n; cin >> n;
+        vi v(n, 0);
+        F0R(i, n) {
+            cin >> v[i];
+        }
+
+        vi occ(n + 1, 0);
+        int best = inf;
+        bool touch = false;
+        for(int i = 0, j = 0; i < n; i++) {
+            if(++occ[v[i]] == 2) {
+                while(v[j] != v[i]) {
+                    occ[v[j]]--;
+                    j++;
+                }
+                best = min(best, i - j + 1);
+                touch = true;
+                occ[v[j]]--;
+                j++;
+            }
+        }
+
+        if(touch) cout << best << endl;
+        else cout << -1 << endl;
+    }
 }

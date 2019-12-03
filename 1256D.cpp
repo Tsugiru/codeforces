@@ -51,8 +51,8 @@ typedef vector<vector<int>> vvi;
 typedef vector<vector<ll>> vvl;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
-typedef unordered_map<int, int, int_hash> umii;
-typedef unordered_map<ll, ll, int_hash> umll;
+typedef unordered_map<int, int, int_hash> umpii;
+typedef unordered_map<ll, ll, int_hash> umpll;
 typedef unordered_set<int, int_hash> usi;
 typedef unordered_set<ll, int_hash> usll;
 typedef unordered_set<pii, pair_hash> uspii;
@@ -76,10 +76,32 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int t; cin >> t;
+    while(t--) {
+        ll n, k; cin >> n >> k;
+        string s; cin >> s;
+        int one = s.find_first_of('1');
+        if(one == string::npos) {
+            cout << s << endl;
+            continue;
+        }
+        for(int i = 0; i < sz(s) && k > 0; i++) {
+            if(s[i] == '0' && i > one) {
+                if(k >= i - one) {
+                    swap(s[i], s[one]);
+                    k -= (i - one);
+                    one = s.find_first_of('1', one);
+                }
+                else {
+                    while(i - one > k) {
+                        one = s.find_first_of('1', one + 1);
+                    }
+                    swap(s[i], s[one]);
+                    k -= (i - one);
+                }
+            }
+        }
+
+        cout << s << endl;
+    }
 }

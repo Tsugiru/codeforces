@@ -42,12 +42,14 @@ struct pair_hash {
 };
 
 typedef vector<int> vi;
+typedef vector<char> vc;
 typedef vector<ld> vd;
 typedef vector<ll> vll;
 typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef vector<cd> vcd;
 typedef vector<vector<int>> vvi;
+typedef vector<vector<char>> vvc;
 typedef vector<vector<ll>> vvl;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
@@ -76,10 +78,41 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int T; cin >> T;
+    while(T--) {
+        int r, c, k; cin >> r >> c >> k;
+        vvc v(r, vc(c, 0));
+        vvc res(r, vc(c, 0));
+        
+        int rice = 0;
+        F0R(i, r) F0R(j, c) {
+            cin >> v[i][j];
+            rice += (v[i][j] == 'R');
+        }
+
+        int has = rice / k, plus = rice % k, now = 0, chick = 1;
+        char cur = '0';
+        F0R(i, r) {
+            for(int j = i&1 ? c - 1 : 0;
+                j >= 0 && j < c;
+                j += i&1 ? -1 : 1) {
+                res[i][j] = cur;
+                now += v[i][j] == 'R';
+                if(now == has + (plus > 0)) {
+                    if(chick < k) {
+                        cur++;
+                        while(cur > '9' && cur < 'A' || cur > 'Z' && cur < 'a') cur++;
+                    }
+                    chick++;
+                    now = 0;
+                    plus--;
+                }
+            }
+        }
+
+        F0R(i, r) {
+            F0R(j, c) cout << res[i][j];
+            cout << '\n';
+        }
+    }
 }

@@ -76,10 +76,9 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int t; cin >> t;
+    while(t--) {
+        int a, b; cin >> a >> b;
+        cout << abs(a - b) / 5 + (abs(a - b) % 5) / 2 + (abs(a - b) % 5) % 2 << endl;
+    }
 }

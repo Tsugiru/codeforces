@@ -71,15 +71,55 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+bool check(ll s, vpii &v, int med) {
+    ll sum = 0;
+    int lt = 0, gt = 0;
+    vpii fit;
+
+    F0R(i, sz(v)) {
+        if(v[i].s < med) {
+            lt++;
+            sum += v[i].f;
+        }
+        else if(v[i].f > med) {
+            gt++;
+            sum += v[i].f;
+        }
+        else fit.pb(v[i]);
+}
+
+    ll left = max(0, sz(v) / 2 + 1 - gt);
+    if(sz(fit) < left) return false;
+
+    sum += left * med;
+    sort(begin(fit), end(fit));
+    F0R(i, sz(fit) - left) {
+        sum += fit[i].f;
+    }
+
+    return sum <= s;
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int t; cin >> t;
+    while(t--) {
+        int n; cin >> n;
+        ll s; cin >> s;
+        vpii v(n, {0, 0});
+        F0R(i, n) cin >> v[i].f >> v[i].s;
+        
+        int lo = 1;
+        int hi = 1e9 + 1; 
+        while(hi - lo > 1) {
+            int mid = lo + (hi - lo) / 2;
+            if(check(s, v, mid)) lo = mid;
+            else hi = mid;
+        }
+
+        cout << lo << endl;
+    }
 }

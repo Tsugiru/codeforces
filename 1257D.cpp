@@ -76,10 +76,39 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int t; cin >> t;
+    while(t--) {
+        int n; cin >> n;
+        vi a(n, 0);
+        F0R(i, n) cin >> a[i];
+
+        int m; cin >> m;
+        vpii h(m, {0, 0});
+        int top = 0;
+        F0R(i, m) {
+            cin >> h[i].s >> h[i].f;
+            top = max(top, h[i].s);
+        }
+        if(top < *max_element(all(a))) { cout << -1 << endl; continue; }
+
+        sort(begin(h), end(h));
+        vpii filt;
+        for(int i = m - 1; i >= 0; i--) {
+            if(i == m - 1 || h[i].s > filt.back().s) filt.pb(h[i]);
+        }
+
+        int ans = 0;
+        for(int i = 0, prev = 0, hi = 0; i < n; i++) {
+            hi = max(hi, a[i]);
+            pii cur = {i - prev + 1, 0};
+            auto it = lower_bound(rbegin(filt), rend(filt), cur);
+            if(it == rend(filt) || hi > it->second) {
+                ans++;
+                prev = i;
+                hi = a[i];
+            }
+        }
+
+        cout << ans + 1 << endl;
+    }
 }

@@ -76,10 +76,20 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int T; cin >> T;
+    while(T--) {
+        int x, y; cin >> x >> y;
+        if(x > y || x == y) {
+            cout << "YES" << endl;
+        }
+        else if(x >= 4) {
+            cout << "YES" << endl;
+        }
+        else {
+            if(x == 2 && y == 3)
+                cout << "YES" << endl;
+            else
+                cout << "NO" << endl;
+        }
+    }
 }

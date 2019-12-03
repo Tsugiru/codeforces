@@ -71,15 +71,44 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+void dfs(int i, vector<usi> &v, usi &left) {
+    vi good;
+    for(int node : left) {
+        if(!v[i].count(node)) {
+            good.pb(node);
+        }
+    }
+    for(int next : good) {
+        left.erase(next);
+    }
+    for(int next : good) {
+        dfs(next, v, left);
+    }
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int n, m; cin >> n >> m;
+    vector<usi> v(n);
+    F0R(i, m) {
+        int a, b; cin >> a >> b; a--; b--;
+        v[a].insert(b);
+        v[b].insert(a);
+    }
+
+    usi left;
+    F0R(i, n) left.insert(i);
+
+    int cnt = 0;
+    while(!left.empty()) {
+        int cur = *left.begin();
+        left.erase(cur);
+        dfs(cur, v, left);
+        cnt++;
+    }
+
+    cout << cnt - 1 << endl;
 }

@@ -71,15 +71,58 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+struct dsu {
+    vi v;
+    vi sizes;
+    
+    dsu(int size) : v(size), sizes(size) {
+        iota(all(v), 0);
+        fill(all(sizes), 1);
+    }
+
+    int fs(int a) {
+        return v[a] == a ? a : fs(v[a]);
+    }
+
+    void ms(int a, int b) {
+        int pa = fs(a);
+        int pb = fs(b);
+        if(sizes[pa] > sizes[pb]) swap(pa, pb);
+        v[pa] = pb;
+        sizes[pb] += sizes[pa];
+    }
+};
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int n, m; cin >> n >> m;
+    vvi v(n);
+    F0R(i, m) {
+        int a, b; cin >> a >> b; a--; b--;
+        v[a].pb(b);
+        v[b].pb(a);
+    }
+
+    dsu d(n);
+    usi r;
+    F0R(i, n) {
+        umii mp;
+        F0R(j, sz(v[i])) {
+            if(v[i][j] < i) mp[d.fs(v[i][j])]++;
+        }
+        vi bad;
+        for(int cur : r) {
+            if(d.sizes[cur] > mp[cur]) {
+                d.ms(cur, i);
+                bad.pb(cur);
+            }
+        }
+        for(int u : bad) r.erase(u);
+        r.insert(i);
+    }
+
+    cout << sz(r) - 1 << endl;
 }

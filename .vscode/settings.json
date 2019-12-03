@@ -124,4 +124,9 @@
         }        
     ],
     "git.ignoreMissingGitWarning": true,
+    "files.associations": {
+        "random": "cpp",
+        "limits": "cpp",
+        "chrono": "cpp"
+    },
 }

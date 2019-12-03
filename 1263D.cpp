@@ -48,9 +48,10 @@ typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef vector<cd> vcd;
 typedef vector<vector<int>> vvi;
-typedef vector<vector<ll>> vvl;
+typedef vector<vector<ll>> vvll;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
+typedef vector<vvi> vvvi;
 typedef unordered_map<int, int, int_hash> umii;
 typedef unordered_map<ll, ll, int_hash> umll;
 typedef unordered_set<int, int_hash> usi;
@@ -71,15 +72,46 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+struct dsu {
+    vi sets;
+    vi sizes;
+    int cnt;
+
+    dsu(int size) : sets(size), sizes(size), cnt(size) {
+        iota(all(sets), 0);
+    }
+
+    int fs(int a) {
+        return sets[a] = sets[a] == a ? a : fs(sets[a]);
+    }
+
+    void ms(int a, int b) {
+        int pa = fs(a);
+        int pb = fs(b);
+        if(sizes[pa] < sizes[pb]) swap(pa, pb);
+        if(pa != pb) cnt--;
+        sizes[pa] += sizes[pb];
+        sets[pb] = pa;
+    }
+};
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
     int n; cin >> n;
-    vi v(n, 0);
+    vector<string> v(n, "");
     F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+
+    dsu d(n);
+    for(int i = 0; i < 26 && d.cnt > 1; i++) {
+        int j = 0;
+        while(j < n && v[j].find_first_of('a' + i) == string::npos) j++;
+        for(int k = j + 1; k < n; k++) {
+            if(v[k].find_first_of('a' + i) != string::npos) d.ms(j, k);
+        }
+    }
+
+    cout << d.cnt << endl;
 }

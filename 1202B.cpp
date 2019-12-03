@@ -76,10 +76,38 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    string s; cin >> s;
+    vvi cnt(10, vi(10, 0));
+    FOR(i, 1, sz(s)) cnt[s[i - 1] - '0'][s[i] - '0']++;
+    
+    vvi res(10, vi(10, 0));
+    F0R(x, 10) {
+        F0R(y, 10) {
+            bool ok = true;
+            int sum = 0;
+            for(int i = 0; i < 10 && ok; i++) {
+                for(int j = 0; j < 10 && ok; j++) {
+                    int best = -1;
+                    for(int a = 0; a <= 10; a++) {
+                        for(int b = 0; b <= 10; b++) {
+                            int dest = i + x*a + y*b;
+                            if(dest % 10 == j && (best == -1 || best > a + b - 1)) {
+                                best = a + b - 1;
+                            }
+                        }
+                    }
+                    if(best == -1 && cnt[i][j]) ok = false;
+                    else sum += best * cnt[i][j];
+                }
+            }
+            res[x][y] = ok ? sum : -1;
+        }
+    }
+
+    F0R(i, 10) {
+        F0R(j, 10) {
+            cout << res[i][j] << " ";
+        }
+        cout << '\n';
+    }
 }

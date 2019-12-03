@@ -76,10 +76,55 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int t; cin >> t;
+    while(t--) {
+        string s; cin >> s;
+        ll minx = 0, miny = 0, maxx = 0, maxy = 0;
+        ll x = 0, y = 0;
+        unordered_map<char, pii> dir{ {'W', {-1, 0}}, {'A', {0, -1}}, {'S', {1, 0}}, {'D', {0, 1}}};
+        for(char c : s) {
+            pii cur = dir[c];
+            x += cur.f;
+            y += cur.s;
+
+            minx = min(x, minx);
+            miny = min(y, miny);
+            maxx = max(x, maxx);
+            maxy = max(y, maxy);
+        }
+
+        pii iminx {-1, -1}, imaxx {-1, -1}, 
+            iminy {-1, -1}, imaxy {-1, -1};
+        x = y = 0;
+        for(int i = 0; i < sz(s); i++) {
+            char c = s[i];
+            pii cur = dir[c];
+            x += cur.f;
+            y += cur.s;
+
+            if(x == minx) {
+                iminx.s = i;
+                if(iminx.f == -1) iminx.f = i;
+            }
+            if(x == maxx) {
+                imaxx.s = i;
+                if(imaxx.f == -1) imaxx.f = i;
+            }
+            if(y == miny) {
+                iminy.s = i;
+                if(iminy.f == -1) iminy.f = i;
+            }
+            if(y == maxy) {
+                imaxy.s = i;
+                if(imaxy.f == -1) imaxy.f = i;
+            }
+        }
+
+        ll diffx = maxx - minx + 1;
+        ll diffy = maxy - miny + 1;
+        bool canx = max(iminx.f, imaxx.f) > min(iminx.s, imaxx.s) && diffx > 2;
+        bool cany = max(iminy.f, imaxy.f) > min(iminy.s, imaxy.s) && diffy > 2;
+
+        cout << diffx * diffy - (canx && cany ? max(diffx, diffy) : canx ? diffy : cany ? diffx : 0) << endl;
+    }
 }

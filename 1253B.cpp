@@ -79,7 +79,43 @@ int main() {
     int n; cin >> n;
     vi v(n, 0);
     F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+
+    usi emp;
+    usi day;
+    vi res;
+    int cur = 0;
+    bool ok = true;
+    F0R(i, n) {
+        if(v[i] < 0) {
+            cur++;
+            if(!emp.count(-v[i])) {
+                ok = false;
+                break;
+            }
+            emp.erase(-v[i]);
+            if(emp.empty()) {
+                res.pb(cur);
+                day.clear();
+                cur = 0;
+            }
+        }
+        else {
+            cur++;
+            if(day.count(v[i])) {
+                ok = false;
+                break;
+            }
+            emp.insert(v[i]);
+            day.insert(v[i]);
+        }
+    }
+
+    if(!ok || !emp.empty()) {
+        cout << -1 << endl;
+    }
+    else {
+        cout << sz(res) << endl;
+        for(int i : res) cout << i << " ";
+        cout << endl;
+    }
 }

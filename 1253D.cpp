@@ -71,15 +71,50 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+void dfs(vvi &g, vi &vis, int i, vpii &v) {
+    if(!vis[i]) {
+        vis[i] = 1;
+        v.back().f = min(v.back().f, i);
+        v.back().s = max(v.back().s, i);
+        for(int next : g[i]) {
+            dfs(g, vis, next, v);
+        }
+    }
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int n, m; cin >> n >> m;
+    vvi g(n);
+    F0R(i, m) {
+        int a, b; cin >> a >> b; a--; b--;
+        g[a].pb(b);
+        g[b].pb(a);
+    }
+
+    vpii v;
+    vi vis(n, 0);
+    F0R(i, n) {
+        if(!vis[i]) {
+            v.pb({inf, 0});
+            dfs(g, vis, i, v);
+        }
+    }
+
+    sort(all(v));
+    int ans = 0;
+    for(int i = 1, hi = v[0].s; i < sz(v); i++) {
+        if(v[i].f < hi) {
+            ans++;
+            hi = max(hi, v[i].s);
+        }
+        else {
+            hi = v[i].s;
+        }
+    }
+
+    cout << ans << endl;
 }

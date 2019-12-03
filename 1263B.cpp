@@ -48,9 +48,10 @@ typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef vector<cd> vcd;
 typedef vector<vector<int>> vvi;
-typedef vector<vector<ll>> vvl;
+typedef vector<vector<ll>> vvll;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
+typedef vector<vvi> vvvi;
 typedef unordered_map<int, int, int_hash> umii;
 typedef unordered_map<ll, ll, int_hash> umll;
 typedef unordered_set<int, int_hash> usi;
@@ -76,10 +77,42 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int t; cin >> t;
+    while(t--) {
+        int n; cin >> n;
+        vvi v(n, vi(4, 0));
+
+        for(int i = 0; i < n; i++) {
+            int temp; cin >> temp;
+            for(int j = 3; j >= 0; j--) {
+                v[i][j] = temp % 10;
+                temp /= 10;
+            }
+        }
+        
+        vi used(10, 0);
+        int ans = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = i + 1; j < n; j++) {
+                if(v[i] == v[j]) {
+                    ans++;
+                    for(int k = 0; k < 10; k++) {
+                        vi vec = v[j];
+                        vec[0] = k;
+                        if(!used[k] && k != v[i][0] && find(all(v), vec) == end(v)) {
+                            v[j][0] = k;
+                            used[k] = 1;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        cout << ans << endl;
+        for(auto &vec : v) {
+            for(int i : vec) cout << i;
+            cout << endl;
+        }
+    }
 }

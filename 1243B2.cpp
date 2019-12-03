@@ -76,10 +76,40 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int k; cin >> k;
+    while(k--) {
+        int n; cin >> n;
+        string s, t; cin >> s >> t;
+        vpii v;
+        bool ok = true;
+        F0R(i, n) {
+            if(s[i] == t[i]) continue;
+            bool done = false;
+            for(int j = i + 1; j < n && !done; j++) {
+                if(s[j] == t[i]) {
+                    swap(s[j], t[j]);
+                    v.pb({j, j});
+                }
+                if(t[j] == t[i]) {
+                    swap(t[j], s[i]);
+                    v.pb({i, j});
+                    done = true;
+                }
+            }
+            if(!done) {
+                ok = false;
+                break;
+            }
+        }
+        if(!ok) {
+            cout << "No" << endl;
+        }
+        else {
+            cout << "Yes" << endl;
+            cout << sz(v) << endl;
+            for(const pii &p : v) {
+                cout << p.first + 1 << " " << p.second + 1 << endl;
+            }
+        }
+    }
 }

@@ -71,15 +71,32 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+void f(int &i) {
+
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
     int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    int hi = 0, best = 0;
+    unordered_map<ll, vll> mpvi;
+    F0R(i, n) {
+        ll c; cin >> c;
+        int cnt = 0;
+        for(ll i = c; !(i&1); i >>= 1) cnt++;
+        mpvi[cnt].pb(c);
+        if(sz(mpvi[cnt]) > hi) {
+            hi = sz(mpvi[cnt]);
+            best = cnt;
+        }
+    }
+    cout << n - hi << endl;
+    for(auto &p : mpvi) {
+        if(p.f != best) {
+            for(ll i : p.s) cout << i << " ";
+        }
+    }
 }

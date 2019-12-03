@@ -48,9 +48,10 @@ typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef vector<cd> vcd;
 typedef vector<vector<int>> vvi;
-typedef vector<vector<ll>> vvl;
+typedef vector<vector<ll>> vvll;
 typedef vector<vector<pii>> vvpii;
 typedef vector<vector<pll>> vvpll;
+typedef vector<vvi> vvvi;
 typedef unordered_map<int, int, int_hash> umii;
 typedef unordered_map<ll, ll, int_hash> umll;
 typedef unordered_set<int, int_hash> usi;
@@ -76,10 +77,23 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
+    int n, k, m;
+    cin >> n >> k >> m;
     vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    unordered_map<int, vi> mp;
+    F0R(i, n) {
+        int in; cin >> in;
+        mp[in % m].pb(in);
+    }
+
+    bool found = false;
+    for(int r = 0; r < m && !found; r++) {
+        if(mp[r].size() >= k) {
+            cout << "Yes" << endl;
+            for(int i = 0; i < k; i++) cout << mp[r][i] << " ";
+            found = true;
+        }
+    }
+
+    if(!found) cout << "No" << endl;
 }

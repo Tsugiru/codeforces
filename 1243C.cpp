@@ -76,10 +76,16 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
-    F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    ll n; cin >> n;
+    if(n == 1) { cout << 1 << endl; return 0; }
+    umll mp;
+    for(ll i = 2; i*i <= n; i++) {
+        while(n % i == 0) {
+            mp[i]++;
+            n /= i;
+        }
+    }
+    if(n > 1) mp[n]++;
+    if(mp.size() > 1) cout << 1 << endl;
+    else cout << begin(mp)->first << endl;
 }

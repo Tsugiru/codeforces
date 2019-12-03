@@ -76,10 +76,15 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n; cin >> n;
-    vi v(n, 0);
+    ll n, k; cin >> n >> k;
+    vll v(n, 0);
     F0R(i, n) cin >> v[i];
-    ll sum = accumulate(begin(v), end(v), 0LL);
-    int hi = *max_element(begin(v), end(v));
-    cout << (hi <= sum - hi && !(sum&1) ? "YES" : "NO") << endl;
+    sort(all(v));
+
+    int best = v[n/2]; 
+    for(int i = n/2; i < n - 1 && k > 0; i++) {
+        best += min(k / (i - n/2 + 1), v[i + 1] - v[i]);
+        k = max(0LL, k - (v[i + 1] - v[i]) * (i - n/2 + 1));
+    }
+    cout << best + k / (n - n/2) << endl;
 }
