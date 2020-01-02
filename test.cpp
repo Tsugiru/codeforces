@@ -72,10 +72,85 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+class Solution {
+public:
+    pair<int, int> num_to_ind(int num, int n) {
+        int row = n - num / n - 1;
+        int col = (num / n) & 1 ? n - (num % n) - 1 : (num % n);
+        return { row, col };
+    }
+    
+    int solve(int pos, vector<int> &vis, vector<int> &cache, const vector<vector<int>> &board) {
+        int n = board.size();
+        if(pos == n * n) {
+            return 0;
+        }
+        if(vis[pos]) return -1;
+        if(cache[pos] != -2) return cache[pos];
+        
+        vis[pos] = 1;
+        int best = -1;
+        for(int i = 1; i <= 6 && i + pos <= n * n; i++) {
+            pair<int, int> inds = num_to_ind(pos + i - 1, n);
+            int x = inds.first, y = inds.second;
+            int next_pos = board[x][y] == -1 ? pos + i : board[x][y];
+            int ret = solve(next_pos, vis, cache, board);
+            if(ret != -1) {
+                best = best == -1
+                    ? 1 + ret
+                    : min(best, 1 + ret);    
+            }
+        }
+        vis[pos] = 0;
+        return cache[pos] = best;
+    }
+    
+    int snakesAndLadders(vector<vector<int>>& board) {
+        vector<int> cache(board.size() * board.size(), -2);
+        vector<int> vis(board.size() * board.size(), 0);
+        return solve(1, vis, cache, board);
+    }
+};
+
+// [[-1,83,-1,46,-1,-1,-1,-1,40,-1],
+//  [-1,29,-1,-1,-1,51,-1,18,-1,-1],
+//  [-1,35,31,51,-1,6,-1,40,-1,-1],
+//  [-1,-1,-1,28,-1,36,-1,-1,-1,-1],
+//  [-1,-1,-1,-1,44,-1,-1,84,-1,-1],
+//  [-1,-1,-1,31,-1,98,27,94,74,-1],
+//  [4,-1,-1,46,3,14,7,-1,84,67],
+//  [-1,-1,-1,-1,2,72,-1,-1,86,-1],
+//  [-1,32,-1,-1,-1,-1,-1,-1,-1,19],
+//  [-1,-1,-1,-1,-1,72,46,-1,92,6]]
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
-
+    Solution s;
+    vector<vector<int>> board
+    {
+ {-1,83,-1,46,-1,-1,-1,-1,40,-1},
+ {-1,29,-1,-1,-1,51,-1,18,-1,-1},
+ {-1,35,31,51,-1,6,-1,40,-1,-1},
+ {-1,-1,-1,28,-1,36,-1,-1,-1,-1},
+ {-1,-1,-1,-1,44,-1,-1,84,-1,-1},
+ {-1,-1,-1,31,-1,98,27,94,74,-1},
+ {4,-1,-1,46,3,14,7,-1,84,67},
+ {-1,-1,-1,-1,2,72,-1,-1,86,-1},
+ {-1,32,-1,-1,-1,-1,-1,-1,-1,19},
+ {-1,-1,-1,-1,-1,72,46,-1,92,6}
+    };
+    s.snakesAndLadders(board);
+// [[-1,83,-1,46,-1,-1,-1,-1,40,-1],
+//  [-1,29,-1,-1,-1,51,-1,18,-1,-1],
+//  [-1,35,31,51,-1,6,-1,40,-1,-1],
+//  [-1,-1,-1,28,-1,36,-1,-1,-1,-1],
+//  [-1,-1,-1,-1,44,-1,-1,84,-1,-1],
+//  [-1,-1,-1,31,-1,98,27,94,74,-1],
+//  [4,-1,-1,46,3,14,7,-1,84,67],
+//  [-1,-1,-1,-1,2,72,-1,-1,86,-1],
+//  [-1,32,-1,-1,-1,-1,-1,-1,-1,19],
+//  [-1,-1,-1,-1,-1,72,46,-1,92,6]]
 }
