@@ -72,93 +72,49 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+int dp[101][101][101][2];
 
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
 
-vector<int> sf(int n) {
-    map<int, int> p;
-    int count = 0;
-    for(int i = 2; i * i < n; i++) {
-        while(n % i == 0) {
-            count++;
-            n /= i;
-            p[i]++;
+    int n; cin >> n;
+    vector<int> a(n);
+    int evens = n / 2, odds = (n + 1) / 2;
+    for(int i = 0; i < n; i++) {
+        cin >> a[i];
+        if(a[i]) {
+            a[i] %= 2;
+            evens -= a[i] == 0; 
+            odds -= a[i] == 1;
+        }
+        else a[i] = -1;
+    }
+
+    for(int i = 0; i <= n; i++) {
+        for(int j = 0; j <= evens + 1; j++) {
+            for(int k = 0; k <= odds + 1; k++) {
+                dp[i][j][k][0] = dp[i][j][k][1] = n;
+            }
         }
     }
-    if(n > 1) {
-        p[n]++;
-        count++;
-    }
-    if(count < 3) {
-        return {-1, -1, -1};
-    }
 
-    int a = begin(p)->first;
-    if(--p[a] == 0) p.erase(a);
-    int b = begin(p)->first;
-    if(--p[b] == 0) p.erase(b);
-
-    if(b == a) {
-        b *= begin(p)->first;
-        --(begin(p)->second);
-    }
-
-    int c = 1;
-    for(auto &elem : p) {
-        for(int i = 0; i < elem.second; i++) c *= elem.first;
-    }
-
-    if(c == 1 || c == a || c == b) {
-        return {-1, -1, -1};
-    }
-
-    return {a, b, c};
-}
-
-vector<int> ss(int n) {
-    for(int i = 2; i < n; i++) {
-        for(int j = i + 1; j < n; j++) {
-            for(int k = j + 1; i * j * k <= n; k++) {
-                if(i * j * k == n) {
-                    return {i, j, k};
+    dp[0][1][1][1] = dp[0][1][1][0] = 0;
+    for(int i = 1; i <= n; i++) {
+        for(int j = 1; j <= evens + 1; j++) {
+            for(int k = 1; k <= odds + 1; k++) {
+                for(int p = 0; p < 2; p++) {
+                    if(a[i - 1] != -1) {
+                        dp[i][j][k][a[i - 1]] = min(dp[i][j][k][a[i - 1]], dp[i - 1][j][k][p] + (a[i - 1] != p));
+                    }
+                    else {
+                        dp[i][j][k][p] = min(dp[i - 1][j - !p][k - p][0] + p, dp[i - 1][j - !p][k - p][1] + !p);
+                    }
                 }
             }
         }
     }
-    return {-1, -1, -1};
-}
 
-class BigObject {
-private:
-    BigObject(int a) {
-        cout << a << endl;
-        cout << "constructor. " << endl;
-}
-    ~BigObject() {
-        cout << "destructor."<< endl;
-    }
-    BigObject(const BigObject&) {
-        cout << "copy constructor." << endl;
- }
-    BigObject(const BigObject&&) {
-        cout << "move constructor." << endl;
- }
-};
-
-//counts occurences of t in s
-int count_occurences(const std::string& t, const std::string &s) {
-    if(t.size() > s.size()) return 0;
-    int result = 0;
-    for(int i = 0; i + t.size() <= s.size(); i++) {
-        result += s.substr(i, t.size()) == t;
-    }
-    return result;
-}
- 
-int main() {
-    int *i = new int(0);
-    {
-        shared_ptr<int> p{i}; // 1
-    }
-    // is i deallocated?
-    cout << *i << endl;
+    cout << min(dp[n][evens + 1][odds + 1][0], dp[n][evens + 1][odds + 1][1]) << endl;
 }

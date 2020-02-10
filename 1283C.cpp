@@ -112,7 +112,7 @@ int main() {
         if(from[i] == -1) need.push(i);
     }
 
-    for(int i = 0; i < n; i++) {
+    for(int i = 0; i < n && !need.empty(); i++) {
         if(to[i] == 0) {
             to[i] = need.front() + 1;
             need.pop();

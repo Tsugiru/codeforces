@@ -72,93 +72,24 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
-
-
-vector<int> sf(int n) {
-    map<int, int> p;
-    int count = 0;
-    for(int i = 2; i * i < n; i++) {
-        while(n % i == 0) {
-            count++;
-            n /= i;
-            p[i]++;
-        }
+int solve(vector<int> &v, int i) {
+    if(i < 0) return 0;
+    vector<int> l, r;
+    for(int c : v) {
+        if((c >> i) & 1) l.push_back(c);
+        else r.push_back(c);
     }
-    if(n > 1) {
-        p[n]++;
-        count++;
-    }
-    if(count < 3) {
-        return {-1, -1, -1};
-    }
-
-    int a = begin(p)->first;
-    if(--p[a] == 0) p.erase(a);
-    int b = begin(p)->first;
-    if(--p[b] == 0) p.erase(b);
-
-    if(b == a) {
-        b *= begin(p)->first;
-        --(begin(p)->second);
-    }
-
-    int c = 1;
-    for(auto &elem : p) {
-        for(int i = 0; i < elem.second; i++) c *= elem.first;
-    }
-
-    if(c == 1 || c == a || c == b) {
-        return {-1, -1, -1};
-    }
-
-    return {a, b, c};
+    if(!l.empty() && !r.empty()) return (1 << i) + min(solve(l, i - 1), solve(r, i - 1));
+    else return solve(v, i - 1);
 }
 
-vector<int> ss(int n) {
-    for(int i = 2; i < n; i++) {
-        for(int j = i + 1; j < n; j++) {
-            for(int k = j + 1; i * j * k <= n; k++) {
-                if(i * j * k == n) {
-                    return {i, j, k};
-                }
-            }
-        }
-    }
-    return {-1, -1, -1};
-}
-
-class BigObject {
-private:
-    BigObject(int a) {
-        cout << a << endl;
-        cout << "constructor. " << endl;
-}
-    ~BigObject() {
-        cout << "destructor."<< endl;
-    }
-    BigObject(const BigObject&) {
-        cout << "copy constructor." << endl;
- }
-    BigObject(const BigObject&&) {
-        cout << "move constructor." << endl;
- }
-};
-
-//counts occurences of t in s
-int count_occurences(const std::string& t, const std::string &s) {
-    if(t.size() > s.size()) return 0;
-    int result = 0;
-    for(int i = 0; i + t.size() <= s.size(); i++) {
-        result += s.substr(i, t.size()) == t;
-    }
-    return result;
-}
- 
 int main() {
-    int *i = new int(0);
-    {
-        shared_ptr<int> p{i}; // 1
-    }
-    // is i deallocated?
-    cout << *i << endl;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    int n; cin >> n;
+    vector<int> v(n, 0);
+    for(int i = 0; i < n; i++) cin >> v[i];
+    cout << solve(v, 30) << endl;
 }

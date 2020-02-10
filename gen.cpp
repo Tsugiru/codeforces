@@ -77,12 +77,5 @@ int main() {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    ofstream ofs("input.txt");
 
-    ofs << 200000 << " " << 200000 << endl;
-    for(int i = 0; i < 200000; i++) {
-        ofs << rng() % 1000000001 << " ";
-    }
-
-    ofs << endl;
 }

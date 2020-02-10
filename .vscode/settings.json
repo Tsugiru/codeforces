@@ -15,7 +15,6 @@
     "editor.insertSpaces": true,
     "editor.detectIndentation": false,
     "editor.formatOnPaste": true,
-    "workbench.colorTheme": "Material Theme Palenight High Contrast",
     "workbench.iconTheme": "material-icon-theme",
     "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 0}",
     "editor.multiCursorModifier": "ctrlCmd",
@@ -125,8 +124,7 @@
     ],
     "git.ignoreMissingGitWarning": true,
     "files.associations": {
-        "random": "cpp",
-        "limits": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "iostream": "cpp"
     },
 }

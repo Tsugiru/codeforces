@@ -72,93 +72,61 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
+int solve_fast(vector<int> &a, vector<int> &b, int m) {
+    int n = a.size();
 
+    vector<int> kmp(n, 0);
+    for(int i = 1, j = 0; i < n; i++) {
+        while(j > 0 && a[i] - a[i - 1] != a[j] - a[j - 1])
+            j = kmp[j - 1];
+        kmp[i] = ++j;
+    }
 
-vector<int> sf(int n) {
-    map<int, int> p;
-    int count = 0;
-    for(int i = 2; i * i < n; i++) {
-        while(n % i == 0) {
-            count++;
-            n /= i;
-            p[i]++;
+    b.insert(end(b), begin(b), end(b));
+    int ans = inf;
+    for(int i = 0, j = 0, x = 0; i < 2*n; i++) {
+        while(j > 0 && (b[i] - a[j] + m) % m != x) {
+            j = kmp[j - 1];
+            x = (b[i - 1] - a[j - 1] + m) % m;
+        }
+        x = (b[i] - a[j] + m) % m;
+        j++;
+        if(j == n) {
+            ans = min(ans, x);
+            j = kmp[j - 1];
+            x = (b[i] - a[j - 1] + m) % m;
         }
     }
-    if(n > 1) {
-        p[n]++;
-        count++;
-    }
-    if(count < 3) {
-        return {-1, -1, -1};
-    }
 
-    int a = begin(p)->first;
-    if(--p[a] == 0) p.erase(a);
-    int b = begin(p)->first;
-    if(--p[b] == 0) p.erase(b);
-
-    if(b == a) {
-        b *= begin(p)->first;
-        --(begin(p)->second);
-    }
-
-    int c = 1;
-    for(auto &elem : p) {
-        for(int i = 0; i < elem.second; i++) c *= elem.first;
-    }
-
-    if(c == 1 || c == a || c == b) {
-        return {-1, -1, -1};
-    }
-
-    return {a, b, c};
+    return ans;
 }
 
-vector<int> ss(int n) {
-    for(int i = 2; i < n; i++) {
-        for(int j = i + 1; j < n; j++) {
-            for(int k = j + 1; i * j * k <= n; k++) {
-                if(i * j * k == n) {
-                    return {i, j, k};
-                }
-            }
+int solve_slow(vector<int> &a, vector<int> &b, int m) {
+    int n = a.size(), ans = m;
+    for(int i = 0; i < n; i++) {
+        int diff = (b[0] - a[i] + m) % m;
+        int j = 1;
+        while(j < n && (b[j] - a[(i + j) % n] + m) % m == diff) j++;
+        if(j == n) {
+            ans = min(ans, diff);
         }
     }
-    return {-1, -1, -1};
+    return ans;
 }
 
-class BigObject {
-private:
-    BigObject(int a) {
-        cout << a << endl;
-        cout << "constructor. " << endl;
-}
-    ~BigObject() {
-        cout << "destructor."<< endl;
-    }
-    BigObject(const BigObject&) {
-        cout << "copy constructor." << endl;
- }
-    BigObject(const BigObject&&) {
-        cout << "move constructor." << endl;
- }
-};
-
-//counts occurences of t in s
-int count_occurences(const std::string& t, const std::string &s) {
-    if(t.size() > s.size()) return 0;
-    int result = 0;
-    for(int i = 0; i + t.size() <= s.size(); i++) {
-        result += s.substr(i, t.size()) == t;
-    }
-    return result;
-}
- 
 int main() {
-    int *i = new int(0);
-    {
-        shared_ptr<int> p{i}; // 1
-    }
-    // is i deallocated?
-    cout << *i << endl;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<int> a(n), b(n);
+    for(int i = 0; i < n; i++) cin >> a[i];
+    for(int i = 0; i < n; i++) cin >> b[i];
+    sort(begin(a), end(a));
+    sort(begin(b), end(b));
+
+    cout << solve_fast(a, b, m) << endl;
 }

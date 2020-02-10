@@ -72,93 +72,32 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
-
-
-vector<int> sf(int n) {
-    map<int, int> p;
-    int count = 0;
-    for(int i = 2; i * i < n; i++) {
-        while(n % i == 0) {
-            count++;
-            n /= i;
-            p[i]++;
-        }
-    }
-    if(n > 1) {
-        p[n]++;
-        count++;
-    }
-    if(count < 3) {
-        return {-1, -1, -1};
-    }
-
-    int a = begin(p)->first;
-    if(--p[a] == 0) p.erase(a);
-    int b = begin(p)->first;
-    if(--p[b] == 0) p.erase(b);
-
-    if(b == a) {
-        b *= begin(p)->first;
-        --(begin(p)->second);
-    }
-
-    int c = 1;
-    for(auto &elem : p) {
-        for(int i = 0; i < elem.second; i++) c *= elem.first;
-    }
-
-    if(c == 1 || c == a || c == b) {
-        return {-1, -1, -1};
-    }
-
-    return {a, b, c};
-}
-
-vector<int> ss(int n) {
-    for(int i = 2; i < n; i++) {
-        for(int j = i + 1; j < n; j++) {
-            for(int k = j + 1; i * j * k <= n; k++) {
-                if(i * j * k == n) {
-                    return {i, j, k};
-                }
-            }
-        }
-    }
-    return {-1, -1, -1};
-}
-
-class BigObject {
-private:
-    BigObject(int a) {
-        cout << a << endl;
-        cout << "constructor. " << endl;
-}
-    ~BigObject() {
-        cout << "destructor."<< endl;
-    }
-    BigObject(const BigObject&) {
-        cout << "copy constructor." << endl;
- }
-    BigObject(const BigObject&&) {
-        cout << "move constructor." << endl;
- }
-};
-
-//counts occurences of t in s
-int count_occurences(const std::string& t, const std::string &s) {
-    if(t.size() > s.size()) return 0;
-    int result = 0;
-    for(int i = 0; i + t.size() <= s.size(); i++) {
-        result += s.substr(i, t.size()) == t;
-    }
-    return result;
-}
- 
 int main() {
-    int *i = new int(0);
-    {
-        shared_ptr<int> p{i}; // 1
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    string s, t;
+    cin >> s >> t;
+    int tsz = t.size(), ssz = s.size();
+
+    vector<int> kmp(tsz + 1, 0);
+    for(int i = 1, j = 0; i < tsz; i++) {
+        while(j && t[i] != t[j]) j = kmp[j];
+        if(t[i] == t[j]) j++;
+        kmp[i + 1] = j;
     }
-    // is i deallocated?
-    cout << *i << endl;
+
+    vector<vector<int>> dp(ssz + 1, vector<int>(tsz + 1, -1e5));
+    dp[0][0] = 0;
+    for(int i = 1; i <= ssz; i++) {
+        for(int j = tsz; j >= 0; j--) {
+            if(j == 0) dp[i][j] = max(dp[i][j], dp[i - 1][j]);
+            else if(j > 0 && (s[i - 1] == t[j - 1] || s[i - 1] == '?'))
+                dp[i][j] = max(dp[i][j], dp[i - 1][j - 1] + (j == tsz));
+            dp[i][kmp[j]] = max(dp[i][kmp[j]], dp[i][j]);
+        }
+    }
+
+    cout << *max_element(begin(dp[ssz]), end(dp[ssz])) << endl;
 }

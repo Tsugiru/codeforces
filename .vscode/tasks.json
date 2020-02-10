@@ -1,23 +1,39 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [ {
-            "label": "Build",
-            "command": "g++ -o ${fileBasenameNoExtension} -g ${fileBasename}",
-            "type": "shell",
-            "args": [],
-            "group": 
-            {
-                "kind": "build",
-                "isDefault": true
-            },
-        },
-        {
-            "label": "Clean",
-            "command": "rm -rf ${fileBasenameNoExtension}",
-            "type": "shell",
-            "args": []
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "g++ build active file",
+      "command": "/usr/bin/g++",
+      "args": ["-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}"],
+      "options": {
+        "cwd": "/usr/bin"
+      },
+      "problemMatcher": ["$gcc"],
+    },
+    {
+      "type": "shell",
+      "label": "run active file",
+      "command": "./${fileBasenameNoExtension}",
+      "args": ["<", "input.txt"],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "dependsOn": ["g++ build active file"]
+    },
+    {
+      "type": "shell",
+      "label": "clean active file",
+      "command": "rm",
+      "args": ["${fileBasenameNoExtension}"],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": ["run active file"]
+    }
+  ]
 }
