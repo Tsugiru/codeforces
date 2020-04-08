@@ -72,93 +72,62 @@ const ll INF = numeric_limits<ll>::max();
 const int inf = numeric_limits<int>::max();
 const int MX = 100001; //check the limits, dummy
 
-
-
-vector<int> sf(int n) {
-    map<int, int> p;
-    int count = 0;
-    for(int i = 2; i * i < n; i++) {
-        while(n % i == 0) {
-            count++;
-            n /= i;
-            p[i]++;
-        }
-    }
-    if(n > 1) {
-        p[n]++;
-        count++;
-    }
-    if(count < 3) {
-        return {-1, -1, -1};
-    }
-
-    int a = begin(p)->first;
-    if(--p[a] == 0) p.erase(a);
-    int b = begin(p)->first;
-    if(--p[b] == 0) p.erase(b);
-
-    if(b == a) {
-        b *= begin(p)->first;
-        --(begin(p)->second);
-    }
-
-    int c = 1;
-    for(auto &elem : p) {
-        for(int i = 0; i < elem.second; i++) c *= elem.first;
-    }
-
-    if(c == 1 || c == a || c == b) {
-        return {-1, -1, -1};
-    }
-
-    return {a, b, c};
-}
-
-vector<int> ss(int n) {
-    for(int i = 2; i < n; i++) {
-        for(int j = i + 1; j < n; j++) {
-            for(int k = j + 1; i * j * k <= n; k++) {
-                if(i * j * k == n) {
-                    return {i, j, k};
+int bfs(const vector<vector<int>> &friends, int source) {
+    queue<int> q;
+    q.push(source);
+    vector<int> visited(friends.size(), 0);
+    int result = 0, level_size = 1;
+    while(!q.empty()) {
+        while(level_size-- > 0) {
+            int current = q.front(); q.pop();
+            for(int next : friends[current]) {
+                if(!visited[next]) {
+                    visited[next] = 1;
+                    q.push(next);
                 }
             }
         }
+        level_size = q.size();
+        result++;
     }
-    return {-1, -1, -1};
+    return result - 1;
 }
 
-class BigObject {
-private:
-    BigObject(int a) {
-        cout << a << endl;
-        cout << "constructor. " << endl;
-}
-    ~BigObject() {
-        cout << "destructor."<< endl;
+int compute_center(const vector<vector<int>> &friends) {
+    vector<int> deg(friends.size());
+    queue<int> q;
+    for(int i = 0; i < friends.size(); i++) {
+        deg[i] = friends[i].size();
+        if(deg[i] == 1) q.push(i); // if current node is a leaf, push it
     }
-    BigObject(const BigObject&) {
-        cout << "copy constructor." << endl;
- }
-    BigObject(const BigObject&&) {
-        cout << "move constructor." << endl;
- }
-};
+    for(int i = 0; i < friends.size() - 1; i++) {
+        int current = q.front(); q.pop();
+        for(int next : friends[current]) {
+            if(--deg[next] == 1) q.push(next);
+        }
+    }
+    return friends.size() == 1 ? 0 : q.front();
+}
 
-//counts occurences of t in s
-int count_occurences(const std::string& t, const std::string &s) {
-    if(t.size() > s.size()) return 0;
-    int result = 0;
-    for(int i = 0; i + t.size() <= s.size(); i++) {
-        result += s.substr(i, t.size()) == t;
+int solution(const vector<vector<int>> &friends) {
+    int best_score = numeric_limits<int>::max(), result = 0;
+    for(int i = 0; i < friends.size(); i++) {
+        if(int current_score = bfs(friends, i); best_score > current_score) {
+            best_score = current_score;
+            result = i;
+        }
     }
     return result;
 }
- 
+
+struct Zone {
+
+};
+
+int computeZoneDensity(Zone &z) {
+
+}
+
 int main() {
-    int *i = new int(0);
-    {
-        shared_ptr<int> p{i}; // 1
-    }
-    // is i deallocated?
-    cout << *i << endl;
+    cout << (char)0b01010110 << (char)0b01000101 << (char)0b01010011 << endl;
 }

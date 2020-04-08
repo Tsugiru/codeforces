@@ -3,9 +3,19 @@
   "tasks": [
     {
       "type": "shell",
+      "label": "g++ build active file debug",
+      "command": "/usr/bin/g++",
+      "args": ["-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}", "-std=c++1z"],
+      "options": {
+        "cwd": "/usr/bin"
+      },
+      "problemMatcher": ["$gcc"],
+    },
+    {
+      "type": "shell",
       "label": "g++ build active file",
       "command": "/usr/bin/g++",
-      "args": ["-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}"],
+      "args": ["-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}", "-std=c++1z"],
       "options": {
         "cwd": "/usr/bin"
       },
@@ -34,6 +44,15 @@
         "isDefault": true
       },
       "dependsOn": ["run active file"]
+    },
+    {
+      "type": "shell",
+      "label": "clean active file indep",
+      "command": "rm",
+      "args": ["${fileBasenameNoExtension}"],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
     }
   ]
 }

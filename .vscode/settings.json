@@ -22,7 +22,8 @@
     "vim.useCtrlKeys": false,
     "vim.handleKeys": {
         "<C-w>": true,
-        "<C-r>": true
+        "<C-r>": true,
+        "<C-v>": true
     },
     "editor.lineNumbers": "relative",
     "vim.incsearch": true,
@@ -127,4 +128,5 @@
         "chrono": "cpp",
         "iostream": "cpp"
     },
+    "C_Cpp.intelliSenseEngineFallback": "Enabled",
 }

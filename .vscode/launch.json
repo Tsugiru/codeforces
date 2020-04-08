@@ -19,8 +19,8 @@
           "ignoreFailures": true
         }
       ],
-      "preLaunchTask": "g++ build active file",
-      "postDebugTask": "clean active file",
+      "preLaunchTask": "g++ build active file debug",
+      "postDebugTask": "clean active file indep",
       "miDebuggerPath": "/usr/bin/gdb"
     }
   ]
