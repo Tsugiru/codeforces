@@ -128,6 +128,175 @@ int computeZoneDensity(Zone &z) {
 
 }
 
+int dp(const vector<int> &a, const vector<int> &b, int i, int flip, vector<vector<int>> &cache) {
+    if(i == a.size()) return 0;
+    if(cache[i][flip] != -2) return cache[i][flip];
+
+    int pa = i > 0 ? a[i - 1] : -1, pb = i > 0 ?  b[i - 1] : -1;
+    if(flip) swap(pa, pb);
+
+    int res = -1;
+    bool good = a[i] > pa && b[i] > pb, good_swapped = a[i] > pb && b[i] > pa;
+
+    if(good) {
+        res = dp(a, b, i + 1, 0, cache);
+    }
+    if(good_swapped) {
+        int next = dp(a, b, i + 1, 1, cache);
+        if(next != -1) res = res == -1 ? 1 + next : min(res, 1 + next);
+    }
+
+    return cache[i][flip] = res;
+}
+
+int relativelySorted(const vector<int> &a, const vector<int> &b) {
+    vector<vector<int>> cache(a.size(), vector<int>(2, -2));
+    return dp(a, b, 0, 0,cache);
+}
+
+int maxNonOverlapSubarraySum(int k, const vector<int> &v) {
+    int res = 0;
+    for(int i = 0, j = 0, sum = 0; i < v.size(); i++) {
+        sum += v[i];
+        while(sum > k) {
+            sum -= v[j++];
+        }
+        if(sum == k) {
+            res++;
+            j = i + 1;
+            sum = 0;
+        }
+    }
+    return res;
+}
+
+class Solution {
+public:
+    struct TrieNode {
+        unordered_map<char, TrieNode *> next;
+        bool is_word = false;
+    };
+    
+    struct Trie {
+        TrieNode *root;
+        
+        Trie() {
+            root = new TrieNode();
+        }
+        
+        void insert(const string &s) {
+            TrieNode *iter = root;
+            for(char c : s) {
+                if(!iter->next.count(c)) {
+                    iter->next[c] = new TrieNode();
+                }
+                iter = iter->next[c];
+            }
+            iter->is_word = true;
+        }
+        
+        bool contains(const string &s) {
+            TrieNode *iter = root;
+            for(char c : s) {
+                if(!iter->next.count(c)) {
+                    return false;
+                }
+                iter = iter->next[c];
+            }
+            return iter->is_word;
+        }
+    };
+    
+    Trie t;
+    
+    void dfs(TrieNode *cur, vector<int> &dp, string &str, vector<string> &res) {
+        for(int i = 0; i < str.size(); i++) {
+            if(t.contains(str.substr(i))) {
+                dp[str.size()] = max(dp[i] + 1, dp[str.size()]);
+            }
+        }
+        
+        if(dp[str.size()] > 1 && cur->is_word) {
+            res.push_back(str);
+        }
+    
+        for(auto [c, node] : cur->next) {
+            str += c;
+            dfs(node, dp, str, res);
+            str.pop_back();
+        }
+        
+        dp[str.size()] = 0;
+    }
+    
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        int maxlen = 0;
+        
+        for(const string &word : words) {
+            if(!word.empty()) {
+                t.insert(word);
+            }
+            maxlen = max(maxlen, (int)word.size());
+        }
+        
+        vector<int> dp(maxlen + 1, 0);
+        vector<string> res;
+        string str = "";
+        dfs(t.root, dp, str, res);
+        sort(begin(res), end(res));
+        return res;        
+    }
+};
+
+class SolutionSlow {
+public:
+    bool solve(unordered_set<string> &st, const string &s) {
+        vector<int> dp(s.size() + 1, 0);
+        for(int i = 1; i <= s.size(); i++) {
+            for(int j = 0; j < i; j++) {
+                if(st.count(s.substr(j, i - j))) {
+                    dp[i] = max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+        return dp.back() > 1;
+    }
+
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        vector<string> res;
+        unordered_set<string> st(begin(words), end(words));
+        st.erase("");
+        for(const auto &word : words) {
+            if(solve(st, word)) {
+                res.push_back(word);
+            }
+        }
+
+        sort(begin(res), end(res));
+        return res;
+    }
+};
+
+struct A {
+    char x;
+};
+
+struct B {
+    int x;
+    int y;
+    int z;
+    int v;
+    int arr[100] = {0};
+};
+
 int main() {
-    cout << (char)0b01010110 << (char)0b01000101 << (char)0b01010011 << endl;
+    Solution s;
+    SolutionSlow ss;
+    mt19937 rng;
+    vector<string> in;
+
+    A* a = new A();
+    B* b = (B*)a;
+
+    cout << b->arr[99] << endl;
 }
