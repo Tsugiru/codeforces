@@ -4,27 +4,21 @@
     {
       "type": "shell",
       "label": "g++ build active file debug",
-      "command": "/usr/bin/g++",
-      "args": ["-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}", "-std=c++1z"],
-      "options": {
-        "cwd": "/usr/bin"
-      },
+      "command": "g++",
+      "args": ["-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}", "-std=c++17"],
       "problemMatcher": ["$gcc"],
     },
     {
       "type": "shell",
       "label": "g++ build active file",
-      "command": "/usr/bin/g++",
-      "args": ["-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}", "-std=c++1z"],
-      "options": {
-        "cwd": "/usr/bin"
-      },
+      "command": "g++",
+      "args": ["-g", "-O3", "-Wall", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}", "-std=c++17"],
       "problemMatcher": ["$gcc"],
     },
     {
       "type": "shell",
       "label": "run active file",
-      "command": "./${fileBasenameNoExtension}",
+      "command": ".\\${fileBasenameNoExtension}",
       "args": ["<", "input.txt"],
       "options": {
         "cwd": "${fileDirname}"
@@ -34,8 +28,8 @@
     {
       "type": "shell",
       "label": "clean active file",
-      "command": "rm",
-      "args": ["${fileBasenameNoExtension}"],
+      "command": "del",
+      "args": ["${fileBasenameNoExtension}.exe"],
       "options": {
         "cwd": "${fileDirname}"
       },
@@ -48,7 +42,7 @@
     {
       "type": "shell",
       "label": "clean active file indep",
-      "command": "rm",
+      "command": "del",
       "args": ["${fileBasenameNoExtension}"],
       "options": {
         "cwd": "${fileDirname}"
