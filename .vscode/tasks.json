@@ -1,52 +1,52 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "type": "shell",
-      "label": "g++ build active file debug",
-      "command": "g++",
-      "args": ["-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}", "-std=c++17"],
-      "problemMatcher": ["$gcc"],
-    },
-    {
-      "type": "shell",
-      "label": "g++ build active file",
-      "command": "g++",
-      "args": ["-g", "-O3", "-Wall", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}", "-std=c++17"],
-      "problemMatcher": ["$gcc"],
-    },
-    {
-      "type": "shell",
-      "label": "run active file",
-      "command": ".\\${fileBasenameNoExtension}",
-      "args": ["<", "input.txt"],
-      "options": {
-        "cwd": "${fileDirname}"
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "type": "shell",
+        "label": "clang++ build active file debug",
+        "command": "clang++",
+        "args": ["-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}", "-std=c++17", "-stdlib=libc++",],
+        "problemMatcher": ["$gcc"],
       },
-      "dependsOn": ["g++ build active file"]
-    },
-    {
-      "type": "shell",
-      "label": "clean active file",
-      "command": "del",
-      "args": ["${fileBasenameNoExtension}.exe"],
-      "options": {
-        "cwd": "${fileDirname}"
+      {
+        "type": "shell",
+        "label": "clang++ build active file",
+        "command": "clang++",
+        "args": ["-O3", "-Wall", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}", "-std=c++17", "-stdlib=libc++",],
+        "problemMatcher": ["$gcc"],
       },
-      "group": {
-        "kind": "build",
-        "isDefault": true
+      {
+        "type": "shell",
+        "label": "run active file",
+        "command": "./${fileBasenameNoExtension}",
+        "args": ["<", "input.txt"],
+        "options": {
+          "cwd": "${fileDirname}"
+        },
+        "dependsOn": ["clang++ build active file"]
       },
-      "dependsOn": ["run active file"]
-    },
-    {
-      "type": "shell",
-      "label": "clean active file indep",
-      "command": "del",
-      "args": ["${fileBasenameNoExtension}"],
-      "options": {
-        "cwd": "${fileDirname}"
+      {
+        "type": "shell",
+        "label": "clean active file",
+        "command": "rm",
+        "args": ["-rf", "${fileBasenameNoExtension}.dSYM", "${fileBasenameNoExtension}"],
+        "options": {
+          "cwd": "${fileDirname}"
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "dependsOn": ["run active file"]
       },
-    }
-  ]
-}
+      {
+        "type": "shell",
+        "label": "clean active file indep",
+        "command": "rm",
+        "args": ["-rf", "${fileBasenameNoExtension}.dSYM", "${fileBasenameNoExtension}"],
+        "options": {
+          "cwd": "${fileDirname}"
+        },
+      }
+    ]
+  }
